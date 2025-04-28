@@ -44,25 +44,65 @@ namespace Lab_7
             private Sportsman[] _sportsmen;
 
 
-            private int count;
+            private int cout;
 
             public string Name => _name;
             public Sportsman[] Sportsmen => _sportsmen;
-            public int SummaryScore => CalculateScore();
-            public int TopPlace => GetTopPlace();
+            public int SummaryScore
+            {
+                get
+                {
+                    if (_sportsmen == null) return 0;
+                    int score = 0;
+                    for (int i = 0; i < _sportsmen.Length; i++)
+                    {
+                        if (_sportsmen[i] == null) continue;
+                        switch (_sportsmen[i].Place)
+                        {
+                            case 1: score += 5; break;
+                            case 2: score += 4; break;
+                            case 3: score += 3; break;
+                            case 4: score += 2; break;
+                            case 5: score += 1; break;
+                            default: break;
+                        }
+                    }
+                    return score;
+                }
+            }
+            public int TopPlace
+            {
+                get
+                {
+                    if (_sportsmen == null) return 18;
+                    int topPlace = 18;
+                    foreach (Sportsman s in _sportsmen)
+                    {
+                        if(s == null) continue;
+
+
+                        if (s.Place < topPlace && s.Place > 0)
+                        {
+                            topPlace = s.Place;
+                        }
+                    }
+
+                    return topPlace;
+                }
+            }
 
             public Team(string name)
             {
                 _name = name;
                 _sportsmen = new Sportsman[6];
-                this.count = 0;
+                cout = 0;
             }
 
             public void Add(Sportsman sportsman)
             {
                 if (_sportsmen == null) return;
 
-                _sportsmen[count++] = sportsman;
+                _sportsmen[cout++] = sportsman;
             }
 
             public void Add(Sportsman[] newSportsmen)
@@ -71,9 +111,9 @@ namespace Lab_7
                 int c = 0;
 
 
-                while(c < newSportsmen.Length && count < _sportsmen.Length)
+                while(c < newSportsmen.Length && cout < _sportsmen.Length)
                 {
-                    _sportsmen[count++] = newSportsmen[c++];
+                    _sportsmen[cout++] = newSportsmen[c++];
                 }
             }
             public static void Sort(Team[] teams)
@@ -134,39 +174,8 @@ namespace Lab_7
                 return champion;
             }
 
-            private int CalculateScore()
-            {
-                if (_sportsmen == null) return 0;
-                int score = 0;
-                foreach (var sportsman in _sportsmen)
-                {
-                    switch (sportsman?.Place)
-                    {
-                        case 1: score += 5; break;
-                        case 2: score += 4; break;
-                        case 3: score += 3; break;
-                        case 4: score += 2; break;
-                        case 5: score += 1; break;
-                        default: break;
-                    }
-                }
-                return score;
-            }
-
-            private int GetTopPlace()
-            {
-                if (_sportsmen == null) return 0;
-                int topPlace = int.MaxValue;
-                foreach (var s in _sportsmen)
-                {
-                    if (s?.Place < topPlace && s.Place > 0)
-                    {
-                        topPlace = s.Place;
-                    }
-                }
-
-                return topPlace;
-            }
+            
+           
 
             
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace Lab_7
 {
@@ -30,10 +31,10 @@ namespace Lab_7
                 get
                 {
                     if (_marks == null) return null;
-                    int[,] newMarks = new int[2, 5];
-                    for (int i = 0; i < 2; i++)
+                    int[,] newMarks = new int[_marks.GetLength(0), _marks.GetLength(1)];
+                    for (int i = 0; i < _marks.GetLength(0); i++)
                     {
-                        for (int j = 0; j < 5; j++)
+                        for (int j = 0; j < _marks.GetLength(1); j++)
                         {
                             newMarks[i, j] = _marks[i, j];
                         }
@@ -48,9 +49,9 @@ namespace Lab_7
                 {
                     if (_marks == null) return 0;
                     int total = 0;
-                    for (int i = 0; i < 2; i++)
+                    for (int i = 0; i < _marks.GetLength(0); i++)
                     {
-                        for (int j = 0; j < 5; j++)
+                        for (int j = 0; j < _marks.GetLength(1); j++)
                         {
                             total += _marks[i, j];
                         }
@@ -74,7 +75,17 @@ namespace Lab_7
             {
                 if (array == null || array.Length == 0) return;
 
-                Array.Sort(array, (x, y) => y.TotalScore.CompareTo(x.TotalScore));
+
+                for(int i = 0; i < array.Length; i ++)
+                {
+                    for(int j = 0;j <  array.Length-1-i; j ++)
+                    {
+                        if (array[j].TotalScore < array[j + 1].TotalScore) (array[j], array[j + 1]) = (array[j + 1], array[j]);
+                    }
+                }
+
+
+                //Array.Sort(array, (x, y) => y.TotalScore.CompareTo(x.TotalScore));
             }
 
             public void Print()
@@ -94,7 +105,7 @@ namespace Lab_7
 
             public abstract double[] Prize { get; }
 
-            protected WaterJump(string name, int bank)
+            public WaterJump(string name, int bank)
             {
                 _name = name;
                 _bank = bank;
@@ -118,8 +129,8 @@ namespace Lab_7
 
             public void Add(params Participant[] participants)
             {
-                if (participants == null || _participants == null) return;
-                foreach (var participant in participants)
+                if (participants == null || participants.Length == 0 || _participants == null) return;
+                foreach (Participant participant in participants)
                 {
                     Add(participant);
                 }
@@ -130,20 +141,20 @@ namespace Lab_7
 
         public class WaterJump3m : WaterJump
         {
-            public WaterJump3m(string name, int bank) : base(name, bank) { }
+            public WaterJump3m(string _name, int bank) : base(_name, bank) { }
 
             public override double[] Prize
             {
                 get
                 {
-                    if (Participants.Length < 3) return null;
-                    if (Participants == null) return null;
+                    if (this.Participants.Length < 3) return null;
+                    if (this.Participants == null) return null;
 
 
                     double[] prizes = new double[3];
-                    prizes[0] = Bank * 0.5; // 50% на 1 место
-                    prizes[1] = Bank * 0.3; // 30% на 2 место
-                    prizes[2] = Bank * 0.2; // 20% на 3 место
+                    prizes[0] = this.Bank * 0.5; // 50% на 1 место
+                    prizes[1] = this.Bank * 0.3; // 30% на 2 место
+                    prizes[2] = this.Bank * 0.2; // 20% на 3 место
                     return prizes;
                 }
             }
@@ -151,28 +162,33 @@ namespace Lab_7
 
         public class WaterJump5m : WaterJump
         {
-            public WaterJump5m(string name, int bank) : base(name, bank) { }
+            public WaterJump5m(string _name, int bank) : base(_name, bank) { }
 
             public override double[] Prize
             {
                 get
                 {
-                    if (Participants.Length < 3) return null;
-                    if (Participants == null) return null;
+                    if (this.Participants.Length < 3) return null;
+                    if (this.Participants == null) return null;
                     
 
-                    int count = Participants.Length / 2;
-                    double N = 20.0 / (double)count;
+                    int count = this.Participants.Length / 2;
+
+                    if(count > 10)
+                    {
+                        count = 10;
+                    }
+                    double N = 20.0 / count;
                     double[] prizes = new double[count];
 
 
                     for(int i = 0;i < count;i++)
                     {
-                        prizes[i] = Math.Round((double)Bank * N / 100, 5);
+                        prizes[i] = this.Bank * N / 100;
                     }
-                    prizes[0] += (double)Bank * 0.4; // 40% на 1 место
-                    prizes[1] += (double)Bank * 0.25; // 25% на 2 место
-                    prizes[2] += (double)Bank * 0.15; // 15% на 3 место
+                    prizes[0] += this.Bank * 0.4; // 40% на 1 место
+                    prizes[1] += this.Bank * 0.25; // 25% на 2 место
+                    prizes[2] += this.Bank * 0.15; // 15% на 3 место
 
                     return prizes;
                 }
