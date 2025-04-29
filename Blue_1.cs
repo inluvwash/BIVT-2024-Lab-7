@@ -14,7 +14,7 @@ namespace Lab_7
             protected int _votes;
 
             public string Name => _name;
-            protected int Votes => _votes;
+            public int Votes => _votes;
 
             public Response(string name)
             {
